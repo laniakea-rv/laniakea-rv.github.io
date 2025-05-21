@@ -13,6 +13,27 @@ main {
     width: 40%;
     height: 40%;
 }
+#store {
+    background-color: #dcdcdc;
+    width: 15%;
+    height: 50%;
+    left: 100%;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    flex-flow: column nowrap;
+    border-radius: 5px;
+}
+.product {
+    width: 90%;
+    height: 15%;
+    background-color: #e6e6e6;
+    border-radius: 5px;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    flex-flow: column nowrap;
+}
 
 #gambles {
     display: flex;

@@ -3,6 +3,7 @@ let gImages = [
     'ads/ad1.jpeg',
     'ads/ad2.jpeg',
     'ads/ad3.jpg',
+    'ads/ad4.jpg',
 ];
 
 function getRandomGImage() {
@@ -18,6 +19,10 @@ const winDisp = document.getElementById('winDisplay');
 const audios = document.querySelectorAll('audio');
 const gs = gambleDiv.children;
 
+const rewDisp = document.querySelector('#increaseReward span')
+const rewButton = document.querySelector('#increaseReward button')
+const adButton = document.querySelector('#adBlock button')
+
 const icons = [
     'gambles/bar.png',
     'gambles/cherries.png',
@@ -30,17 +35,30 @@ const icons = [
     'gambles/seven.png'
 ]
 
+let upgrades = {
+    multiplier: {
+        price: 25,
+        multiplier: 1,
+    },
+    adBlock: {
+        price: 500,
+        obtained: false,
+    }
+}
+
 let num1 = null;
 let num2 = null;
 let num3 = null;
 
 let money = 100;
 const normalPay = 15;
-const jackpotMultiplier = 3;
-const betterMultiplier = 3;
+const jackpotMultiplier = 8;
+const betterMultiplier = 5;
 const masterVol = 6;
 const forcedJackpot = false;
 const fjNumber = 7;
+const ads = true;
+const pings = false;
 
 function wait(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
@@ -54,6 +72,7 @@ async function uptMon(prevNum, pause) {
             moneyDisp.textContent = `wallet: $${prevNum + (i + 1)}`;
             await wait(pause)
         }
+        moneyDisp.textContent = `wallet: $${money}`;
     }
 }
 
@@ -74,7 +93,7 @@ async function rFunc(ding, index) {
         await wait(25);
 
         audios[1].playbackRate = 5;
-        audios[1].volume = 0.6;
+        audios[1].volume = 0.1 * masterVol;
         audios[1].play();
 
         ding.style.transition = "transform 0.05s ease-out";
@@ -107,70 +126,64 @@ async function rFunc(ding, index) {
 }
 
 async function ad() {
-    console.log('advertenco');
-    let adFrame = document.createElement('div');
-    adFrame.style.position = 'fixed';
-    adFrame.style.width = '60%';
-    adFrame.style.height = '60%';
-    adFrame.style.background = 'none';
+    const adFrame = Object.assign(document.createElement('div'), {
+        style: 'position:fixed;width:60%;height:60%;background:none;'
+    });
 
-    let img = document.createElement('img');
-    img.src = getRandomGImage();
-    img.style.width = '100%';
-    img.style.height = '100%';
-    img.style.borderRadius = '5px';
+    const img = Object.assign(document.createElement('img'), {
+        src: getRandomGImage(),
+        style: 'width:100%;height:100%;border-radius:5px;'
+    });
 
-    let butain = document.createElement('button');
-    butain.style.position = 'absolute';
-    butain.style.width = '50px';
-    butain.style.height = '50px';
-    butain.textContent = 'x';
-    butain.style.top = '0px';
-    butain.style.right = '0px';
-    butain.style.background = 'none';
-    butain.style.color = 'grey';
-    butain.style.border = 'none';
-    butain.disabled = true;
+    const butain = Object.assign(document.createElement('button'), {
+        textContent: 'x',
+        disabled: true,
+        style: 'position:absolute;width:50px;height:50px;top:0;right:0;background:none;color:grey;border:none;'
+    });
 
-    let anchor = document.createElement('a');
-    anchor.href = 'https://th.bing.com/th/id/OIP.spzGqof-VJa1NdRJiaPjEwHaE8?rs=1&pid=ImgDetMain';
-    anchor.target = '_blank';
-    anchor.style.position = 'absolute';
-    anchor.style.bottom = '-20px';
-    anchor.style.left = '0px';
-    anchor.style.textDecoration = 'none';
-    anchor.style.color = 'gray';
-    anchor.width = '100%';
-    anchor.textContent = 'click here to see why you get these ads';
+    const anchor = Object.assign(document.createElement('a'), {
+        href: 'https://th.bing.com/th/id/OIP.spzGqof-VJa1NdRJiaPjEwHaE8?rs=1&pid=ImgDetMain',
+        target: '_blank',
+        textContent: 'click here to see why you get these ads',
+        style: 'position:absolute;bottom:-20px;left:0;text-decoration:none;color:gray;width:100%;'
+    });
 
+    [butain, img, anchor].forEach(el => adFrame.appendChild(el));
     document.body.appendChild(adFrame);
-    adFrame.appendChild(butain);
-    adFrame.appendChild(img);
-    adFrame.appendChild(anchor);
 
     await wait(2500);
     butain.disabled = false;
     butain.style.color = 'white';
 
-    butain.addEventListener('click', function () {
-        adFrame.remove();
-    });
-    anchor.addEventListener('click', function () {
+    butain.onclick = () => {
+        if (Math.ceil(Math.random() * 10) > 8) {
+            window.open(anchor.href, '_blank');
+            audios[6].currentTime = 0;
+            audios[6].play();
+        } else {
+            adFrame.remove();
+        }
+    };
+
+    anchor.onclick = () => {
         audios[6].currentTime = 0;
         audios[6].play();
-    });
-
+    };
 }
 
 async function gamble() {
     knopje.disabled = true;
 
-    if (Math.ceil(Math.random() * 100) > 99) {
-        audios[5].volume = 0.4;
-        audios[5].play();
+    if (pings) {
+        if (Math.ceil(Math.random() * 100) > 99) {
+            audios[5].volume = 0.4;
+            audios[5].play();
+        }
     }
-    if (Math.ceil(Math.random() * 100) > 90) {
-        ad();
+    if (ads && upgrades.adBlock.obtained != true) {
+        if (Math.ceil(Math.random() * 100) > 85) {
+            ad();
+        }
     }
 
     if (money - 5 <= 0) {
@@ -198,69 +211,75 @@ async function gamble() {
         winDisp.textContent = `rolling...`;
         uptMon();
 
-        rFunc(gs[0].querySelector("img"), 0);
+        const spin0 = rFunc(gs[0].querySelector("img"), 0);
         await wait(150);
-        rFunc(gs[1].querySelector("img"), 1);
+        const spin1 = rFunc(gs[1].querySelector("img"), 1);
         await wait(150);
-        await rFunc(gs[2].querySelector("img"), 2);
+        const spin2 = rFunc(gs[2].querySelector("img"), 2);
+        await Promise.all([spin0, spin1, spin2]);
+        console.log(num1, num2, num3);
 
         if (num1 == 7 && num1 == num2 && num2 == num3) {
             const b = money;
-            let payout = normalPay * (jackpotMultiplier * betterMultiplier);
-            money += payout;
-            winDisp.textContent = `SUPER JACKPOTTT! + $${payout}`;
+            let payout = Math.floor(normalPay * (jackpotMultiplier * betterMultiplier));
+            money += Math.floor(payout * upgrades.multiplier.multiplier);
+            winDisp.textContent = `SUPER JACKPOTTT! + $${Math.floor(payout * upgrades.multiplier.multiplier)}`;
             audios[0].currentTime = 0;
             audios[0].volume = 0.5;
             audios[0].play();
+            audios[2].currentTime = 0;
             audios[2].volume = 1;
             audios[2].play();
             audios[4].volume = 0.5;
             audios[4].play();
-            await uptMon(b, 25);
+            await uptMon(b, (5 / upgrades.multiplier.multiplier));
         } else if (num1 == num2 && num2 == num3) {
             const b = money;
             let payout;
-            if (num1 == 0 || num2 == 0 || num3 == 0) {
+            if (num1 == 1 || num2 == 1 || num3 == 1) {
                 payout = (normalPay * jackpotMultiplier * 1.5);
             } else {
                 payout = (normalPay * jackpotMultiplier);
             }
-            money += payout;
+            money += Math.floor(payout * upgrades.multiplier.multiplier);
+            winDisp.textContent = `jackpot! + $${Math.floor(payout * upgrades.multiplier.multiplier)}`;
             audios[0].currentTime = 0;
             audios[0].volume = 0.5;
             audios[0].play();
-            winDisp.textContent = `jackpot! + $${payout}`;
+            audios[2].currentTime = 0;
             audios[2].volume = 1;
             audios[2].play();
             audios[4].volume = 0.5;
             audios[4].play();
-            await uptMon(b, 30);
+            await uptMon(b, (25 / upgrades.multiplier.multiplier));
         } else if (num1 == num2 || num2 == num3) {
             const b = money;
             let payout;
-            if (num1 == 0 || num2 == 0 || num3 == 0) {
+            if (num1 == 1 || num2 == 1 || num3 == 1) {
                 payout = (normalPay * 1.5);
-            } else
+            } else {
                 payout = normalPay;
-
-            winDisp.textContent = `big win! + $${payout}`;
+            }
+            money += Math.floor(payout * upgrades.multiplier.multiplier);
+            winDisp.textContent = `big win! + $${Math.floor(payout * upgrades.multiplier.multiplier)}`;
+            audios[2].currentTime = 0;
             audios[2].volume = 1;
             audios[2].play();
-            money += payout;
-            await uptMon(b, 15);
-        } else if (num1 == num3) {
+            await uptMon(b, (15 / upgrades.multiplier.multiplier));
+        } else if ((num1 == num3) || ((num1 == 3 || num2 == 3 || num3 == 3))) {
             const b = money;
             let payout;
-            if (num1 == 0 || num2 == 0 || num3 == 0) {
+            if (num1 == 1 || num2 == 1 || num3 == 1) {
                 payout = (normalPay);
             } else {
                 payout = Math.floor(normalPay / 2);
             }
-            winDisp.textContent = `win! + $${payout}`;
+            money += Math.floor(payout * upgrades.multiplier.multiplier);
+            winDisp.textContent = `win! + $${Math.floor(payout * upgrades.multiplier.multiplier)}`;
+            audios[2].currentTime = 0;
             audios[2].volume = 1;
             audios[2].play();
-            money += payout;
-            await uptMon(b, 15);
+            await uptMon(b, (15 / upgrades.multiplier.multiplier));
         } else {
             winDisp.textContent = `no win :(`
         }
@@ -268,4 +287,34 @@ async function gamble() {
     }
 }
 
+async function rewUpgrade() {
+    if (money >= upgrades.multiplier.price) {
+        money -= upgrades.multiplier.price;
+        upgrades.multiplier.multiplier += 1;
+        upgrades.multiplier.price *= 3;
+        uptMon();
+        rewButton.textContent = `$${upgrades.multiplier.price}`;
+        rewDisp.textContent = `Increase payout (x${upgrades.multiplier.multiplier})`;
+    }
+}
+
+async function adUpgrade() {
+    if (money >= upgrades.adBlock.price && !upgrades.adBlock.obtained) {
+        money -= upgrades.adBlock.price;
+        upgrades.adBlock.obtained = true;
+        uptMon();
+        adButton.textContent = `Already purchased`;
+        adButton.disabled = true;
+        await wait(300000)
+        adButton.textContent = `$${upgrades.adBlock.price}`;
+        upgrades.adBlock.obtained = false;
+        adButton.disabled = false;
+    }
+}
+
+rewButton.textContent = `$${upgrades.multiplier.price}`;
+adButton.textContent = `$${upgrades.adBlock.price}`;
+
 knopje.addEventListener("click", gamble);
+rewButton.addEventListener("click", rewUpgrade);
+adButton.addEventListener("click", adUpgrade);
