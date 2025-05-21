@@ -230,7 +230,6 @@ async function gamble() {
         await wait(150);
         const spin2 = rFunc(gs[2].querySelector("img"), 2);
         await Promise.all([spin0, spin1, spin2]);
-        console.log(num1, num2, num3);
 
         if (num1 == 7 && num1 == num2 && num2 == num3) {
             const b = money;
@@ -325,6 +324,16 @@ async function adUpgrade() {
         adButton.disabled = false;
     }
 }
+
+document.getElementById("reset").addEventListener("click", function() {
+    localStorage.removeItem("upgrades_multiplier");
+    localStorage.removeItem("money");
+    upgrades.multiplier.multiplier = 1;
+    upgrades.multiplier.price = 25;
+    money = 100;
+    location.reload();
+});
+
 
 knopje.addEventListener("click", gamble);
 rewButton.addEventListener("click", rewUpgrade);

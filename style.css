@@ -4,6 +4,11 @@ body {
     align-items: center;
     height: 95vh;
 }
+#reset {
+    width: 10%;
+    height: 5%;
+    font-size: 5%;
+}
 main {
     margin-top: -20%;
     display: flex;
