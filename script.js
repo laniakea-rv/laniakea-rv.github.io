@@ -65,10 +65,12 @@ if (savedMultiplier) {
     upgrades.multiplier = savedMultiplier;
 }
 
-rewButton.textContent = `$${upgrades.multiplier.price}`;
-rewDisp.textContent = `Increase payout (x${upgrades.multiplier.multiplier})`;
-adButton.textContent = `$${upgrades.adBlock.price}`
-moneyDisp.textContent = `wallet: $${money}`;
+document.addEventListener("DOMContentLoaded", () => {
+    rewButton.textContent = `$${upgrades.multiplier.price}`;
+    rewDisp.textContent = `Increase payout (x${upgrades.multiplier.multiplier})`;
+    adButton.textContent = `$${upgrades.adBlock.price}`
+    moneyDisp.textContent = `wallet: $${money}`;
+});
 
 function wait(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
