@@ -1,0 +1,36 @@
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 95vh;
+}
+main {
+    margin-top: -20%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-flow: column nowrap;
+    width: 40%;
+    height: 40%;
+}
+
+#gambles {
+    display: flex;
+    justify-content: space-between;
+    flex-flow: row nowrap;
+    width: 35%;
+    height: 100%;
+}
+#gambles div {
+    width: 50px;
+    height: 50px;
+    padding: 5px;
+    border-radius: 5px;
+    background-color: #dcdcdc;
+    overflow: hidden;
+    position: relative;
+}
+.gambleIcon {
+    width: 50px;
+    height: 50px;
+}
