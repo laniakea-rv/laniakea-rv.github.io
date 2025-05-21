@@ -67,6 +67,7 @@ if (savedMultiplier) {
 
 rewButton.textContent = `$${upgrades.multiplier.price}`;
 rewDisp.textContent = `Increase payout (x${upgrades.multiplier.multiplier})`;
+adButton.textContent = `$${upgrades.adBlock.price}`
 moneyDisp.textContent = `wallet: $${money}`;
 
 function wait(ms) {
