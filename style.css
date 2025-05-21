@@ -8,6 +8,8 @@ body {
     width: 10%;
     height: 5%;
     font-size: 5%;
+    border-style: solid;
+    border-color: #eaeaea;
 }
 main {
     margin-top: -20%;
