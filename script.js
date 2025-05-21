@@ -50,7 +50,7 @@ let num1 = null;
 let num2 = null;
 let num3 = null;
 
-let money = 100;
+let money = parseInt(localStorage.getItem("money")) || 100;
 const normalPay = 15;
 const jackpotMultiplier = 8;
 const betterMultiplier = 5;
@@ -60,11 +60,21 @@ const fjNumber = 7;
 const ads = true;
 const pings = false;
 
+const savedMultiplier = JSON.parse(localStorage.getItem("upgrades_multiplier"));
+if (savedMultiplier) {
+    upgrades.multiplier = savedMultiplier;
+}
+
+rewButton.textContent = `$${upgrades.multiplier.price}`;
+rewDisp.textContent = `Increase payout (x${upgrades.multiplier.multiplier})`;
+moneyDisp.textContent = `wallet: $${money}`;
+
 function wait(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 async function uptMon(prevNum, pause) {
+    localStorage.setItem("money", money);
     if (!prevNum) {
         moneyDisp.textContent = `wallet: $${money}`;
     } else {
@@ -295,6 +305,7 @@ async function rewUpgrade() {
         uptMon();
         rewButton.textContent = `$${upgrades.multiplier.price}`;
         rewDisp.textContent = `Increase payout (x${upgrades.multiplier.multiplier})`;
+        localStorage.setItem("upgrades_multiplier", JSON.stringify(upgrades.multiplier));
     }
 }
 
@@ -311,9 +322,6 @@ async function adUpgrade() {
         adButton.disabled = false;
     }
 }
-
-rewButton.textContent = `$${upgrades.multiplier.price}`;
-adButton.textContent = `$${upgrades.adBlock.price}`;
 
 knopje.addEventListener("click", gamble);
 rewButton.addEventListener("click", rewUpgrade);
