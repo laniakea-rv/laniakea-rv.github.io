@@ -11,7 +11,6 @@ function getRandomGImage() {
     return gImages[randomIndex];
 }
 
-
 const knopje = document.getElementById('startGamble');
 const gambleDiv = document.getElementById('gambles');
 const moneyDisp = document.getElementById('moneyDisplay');
@@ -325,7 +324,7 @@ async function adUpgrade() {
     }
 }
 
-document.getElementById("reset").addEventListener("click", function() {
+document.getElementById("reset").addEventListener("click", function () {
     localStorage.removeItem("upgrades_multiplier");
     localStorage.removeItem("money");
     upgrades.multiplier.multiplier = 1;
@@ -334,6 +333,11 @@ document.getElementById("reset").addEventListener("click", function() {
     location.reload();
 });
 
+document.addEventListener('DOMContentLoaded', function () {
+    gs[0].querySelector('img').src = icons[Math.floor(Math.random() * icons.length)];
+    gs[1].querySelector('img').src = icons[Math.floor(Math.random() * icons.length)];
+    gs[2].querySelector('img').src = icons[Math.floor(Math.random() * icons.length)];
+});
 
 knopje.addEventListener("click", gamble);
 rewButton.addEventListener("click", rewUpgrade);
