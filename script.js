@@ -334,9 +334,13 @@ document.getElementById("reset").addEventListener("click", function () {
 });
 
 document.addEventListener('DOMContentLoaded', function () {
-    gs[0].querySelector('img').src = icons[Math.floor(Math.random() * icons.length)];
-    gs[1].querySelector('img').src = icons[Math.floor(Math.random() * icons.length)];
-    gs[2].querySelector('img').src = icons[Math.floor(Math.random() * icons.length)];
+    const gs2 = gambleDiv.children;
+
+    if (gs2.length >= 3) {
+        gs2[0].querySelector('img').src = icons[Math.floor(Math.random() * icons.length)];
+        gs2[1].querySelector('img').src = icons[Math.floor(Math.random() * icons.length)];
+        gs2[2].querySelector('img').src = icons[Math.floor(Math.random() * icons.length)];
+    }
 });
 
 knopje.addEventListener("click", gamble);
